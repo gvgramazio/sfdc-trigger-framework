@@ -28,8 +28,9 @@ public virtual class TriggerHandler {
 
   // main method that will be called during execution
   public void run() {
-    if (!validateRun())
+    if (!validateRun()) {
       return;
+    }
 
     addToLoopCount();
 
@@ -195,8 +196,9 @@ public virtual class TriggerHandler {
     }
 
     public Boolean exceeded() {
-      if (this.max < 0)
+      if (this.max < 0) {
         return false;
+      }
       if (this.count > this.max) {
         return true;
       }
