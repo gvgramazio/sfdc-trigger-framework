@@ -81,16 +81,48 @@ public virtual class TriggerHandler {
     TriggerHandler.bypassedHandlers.add(handlerName);
   }
 
+  public static void bypass(List<String> handlersNames) {
+    TriggerHandler.bypassedHandlers.addAll(handlersNames);
+  }
+
+  public static void bypass(Type handlerType) {
+    bypass(handlerType.getName());
+  }
+
+  public static void bypass(List<Type> handlersTypes) {
+    for (Type handlerType : handlersTypes) {
+      bypass(handlerType.getName());
+    }
+  }
+
   public static void clearBypass(String handlerName) {
     TriggerHandler.bypassedHandlers.remove(handlerName);
+  }
+
+  public static void clearBypass(List<String> handlersNames) {
+    TriggerHandler.bypassedHandlers.removeAll(handlersNames);
+  }
+
+  public static void clearBypass(Type handlerType) {
+    clearBypass(handlerType.getName());
+  }
+
+  public static void clearBypass(List<Type> handlersTypes) {
+    for (Type handlerType : handlersTypes) {
+      clearBypass(handlerType.getName());
+    }
+  }
+
+  public static void clearAllBypasses() {
+    TriggerHandler.bypassedHandlers.clear();
   }
 
   public static Boolean isBypassed(String handlerName) {
     return TriggerHandler.bypassedHandlers.contains(handlerName);
   }
 
-  public static void clearAllBypasses() {
-    TriggerHandler.bypassedHandlers.clear();
+  public static Boolean isBypassed(Type handlerType) {
+    return TriggerHandler.bypassedHandlers.contains(handlerType.getName());
   }
 
   /***************************************
