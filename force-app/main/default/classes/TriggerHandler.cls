@@ -140,7 +140,7 @@ public virtual class TriggerHandler {
     } else {
       this.isTriggerExecuting = true;
     }
-    
+
     if (Trigger.isExecuting) {
       this.triggerOperationType = Trigger.OperationType;
     } else {
@@ -172,7 +172,7 @@ public virtual class TriggerHandler {
 
   @TestVisible
   private String getHandlerName() {
-    return String.valueOf(this).substring(0, String.valueOf(this).indexOf(':'));
+    return getObjectType(this);
   }
 
   /***************************************
@@ -235,6 +235,16 @@ public virtual class TriggerHandler {
     public void setMax(Integer max) {
       this.max = max;
     }
+  }
+
+  private static String getObjectType(Object obj) {
+    String result = 'DateTime';
+    try {
+      DateTime typeCheck = (DateTime) obj;
+    } catch (System.TypeException te) {
+      result = te.getMessage().substringAfter('Invalid conversion from runtime type ').substringBefore(' to Datetime');
+    }
+    return result;
   }
 
   // exception class

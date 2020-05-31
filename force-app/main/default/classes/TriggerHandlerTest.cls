@@ -1,6 +1,5 @@
 @isTest
 private class TriggerHandlerTest {
-
   private static final String TRIGGER_CONTEXT_ERROR = 'Trigger handler called outside of Trigger execution';
 
   private static String lastMethodCalled;
@@ -87,31 +86,80 @@ private class TriggerHandlerTest {
     afterUpdateMode();
 
     // test a bypass and run handler
-    TriggerHandler.bypass('TestHandler');
+    TriggerHandler.bypass('TriggerHandlerTest.TestHandler');
     handler.run();
     System.assertEquals(null, lastMethodCalled, 'last method should be null when bypassed');
-    System.assertEquals(true, TriggerHandler.isBypassed('TestHandler'), 'test handler should be bypassed');
+    System.assertEquals(
+      true,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
     resetTest();
 
     // clear that bypass and run handler
-    TriggerHandler.clearBypass('TestHandler');
+    TriggerHandler.clearBypass('TriggerHandlerTest.TestHandler');
     handler.run();
     System.assertEquals('afterUpdate', lastMethodCalled, 'last method called should be afterUpdate');
-    System.assertEquals(false, TriggerHandler.isBypassed('TestHandler'), 'test handler should be bypassed');
+    System.assertEquals(
+      false,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
     resetTest();
 
     // test a re-bypass and run handler
-    TriggerHandler.bypass('TestHandler');
+    TriggerHandler.bypass('TriggerHandlerTest.TestHandler');
     handler.run();
     System.assertEquals(null, lastMethodCalled, 'last method should be null when bypassed');
-    System.assertEquals(true, TriggerHandler.isBypassed('TestHandler'), 'test handler should be bypassed');
+    System.assertEquals(
+      true,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
     resetTest();
 
     // clear all bypasses and run handler
     TriggerHandler.clearAllBypasses();
     handler.run();
     System.assertEquals('afterUpdate', lastMethodCalled, 'last method called should be afterUpdate');
-    System.assertEquals(false, TriggerHandler.isBypassed('TestHandler'), 'test handler should be bypassed');
+    System.assertEquals(
+      false,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
+    resetTest();
+
+    // test a bypass and run handler
+    TriggerHandler.bypass(TestHandler.class);
+    handler.run();
+    System.assertEquals(null, lastMethodCalled, 'last method should be null when bypassed');
+    System.assertEquals(
+      true,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
+    resetTest();
+
+    // clear that bypass and run handler
+    TriggerHandler.clearBypass(TestHandler.class);
+    handler.run();
+    System.assertEquals('afterUpdate', lastMethodCalled, 'last method called should be afterUpdate');
+    System.assertEquals(
+      false,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
+    resetTest();
+
+    // test a re-bypass and run handler
+    TriggerHandler.bypass(TestHandler.class);
+    handler.run();
+    System.assertEquals(null, lastMethodCalled, 'last method should be null when bypassed');
+    System.assertEquals(
+      true,
+      TriggerHandler.isBypassed('TriggerHandlerTest.TestHandler'),
+      'test handler should be bypassed'
+    );
     resetTest();
   }
 
@@ -185,7 +233,11 @@ private class TriggerHandlerTest {
 
   @isTest
   static void testGetHandlerName() {
-    System.assertEquals('TestHandler', handler.getHandlerName(), 'handler name should match class name');
+    System.assertEquals(
+      'TriggerHandlerTest.TestHandler',
+      handler.getHandlerName(),
+      'handler name should match class name'
+    );
   }
 
   // test virtual methods
@@ -247,7 +299,7 @@ private class TriggerHandlerTest {
       TriggerHandlerTest.lastMethodCalled = 'beforeInsert';
     }
 
-    public override void  beforeUpdate() {
+    public override void beforeUpdate() {
       TriggerHandlerTest.lastMethodCalled = 'beforeUpdate';
     }
 
