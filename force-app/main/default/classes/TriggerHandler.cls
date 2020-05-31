@@ -3,11 +3,9 @@ public virtual class TriggerHandler {
   private static Map<String, LoopCount> loopCountMap;
   private static Set<String> bypassedHandlers;
 
-  // the current context of the trigger, overridable in tests
+  // context variables, overridable in tests
   @TestVisible
-  private TriggerContext context;
-
-  // the current context of the trigger, overridable in tests
+  private TriggerOperation triggerOperationType;
   @TestVisible
   private Boolean isTriggerExecuting;
 
@@ -35,7 +33,7 @@ public virtual class TriggerHandler {
     addToLoopCount();
 
     // dispatch to the correct handler method
-    switch on this.context {
+    switch on this.triggerOperationType {
       when BEFORE_INSERT {
         this.beforeInsert();
       }
@@ -135,28 +133,18 @@ public virtual class TriggerHandler {
   }
 
   @TestVisible
-  private void setTriggerContext(String ctx, Boolean testMode) {
+  private void setTriggerContext(TriggerOperation operationType, Boolean testMode) {
     if (!Trigger.isExecuting && !testMode) {
       this.isTriggerExecuting = false;
       return;
     } else {
       this.isTriggerExecuting = true;
     }
-
-    if ((Trigger.isExecuting && Trigger.isBefore && Trigger.isInsert) || (ctx != null && ctx == 'before insert')) {
-      this.context = TriggerContext.BEFORE_INSERT;
-    } else if ((Trigger.isExecuting && Trigger.isBefore && Trigger.isUpdate) || (ctx != null && ctx == 'before update')) {
-      this.context = TriggerContext.BEFORE_UPDATE;
-    } else if ((Trigger.isExecuting && Trigger.isBefore && Trigger.isDelete) || (ctx != null && ctx == 'before delete')) {
-      this.context = TriggerContext.BEFORE_DELETE;
-    } else if ((Trigger.isExecuting && Trigger.isAfter && Trigger.isInsert) || (ctx != null && ctx == 'after insert')) {
-      this.context = TriggerContext.AFTER_INSERT;
-    } else if ((Trigger.isExecuting && Trigger.isAfter && Trigger.isUpdate) || (ctx != null && ctx == 'after update')) {
-      this.context = TriggerContext.AFTER_UPDATE;
-    } else if ((Trigger.isExecuting && Trigger.isAfter && Trigger.isDelete) || (ctx != null && ctx == 'after delete')) {
-      this.context = TriggerContext.AFTER_DELETE;
-    } else if ((Trigger.isExecuting && Trigger.isAfter && Trigger.isUndelete) || (ctx != null && ctx == 'after undelete')) {
-      this.context = TriggerContext.AFTER_UNDELETE;
+    
+    if (Trigger.isExecuting) {
+      this.triggerOperationType = Trigger.OperationType;
+    } else {
+      this.triggerOperationType = operationType;
     }
   }
 
@@ -176,7 +164,7 @@ public virtual class TriggerHandler {
   // make sure this trigger should continue to run
   @TestVisible
   private Boolean validateRun() {
-    if (!this.isTriggerExecuting || this.context == null) {
+    if (!this.isTriggerExecuting || this.triggerOperationType == null) {
       throw new TriggerHandlerException('Trigger handler called outside of Trigger execution');
     }
     return !TriggerHandler.bypassedHandlers.contains(getHandlerName());
@@ -247,18 +235,6 @@ public virtual class TriggerHandler {
     public void setMax(Integer max) {
       this.max = max;
     }
-  }
-
-  // possible trigger contexts
-  @TestVisible
-  private enum TriggerContext {
-    BEFORE_INSERT,
-    BEFORE_UPDATE,
-    BEFORE_DELETE,
-    AFTER_INSERT,
-    AFTER_UPDATE,
-    AFTER_DELETE,
-    AFTER_UNDELETE
   }
 
   // exception class

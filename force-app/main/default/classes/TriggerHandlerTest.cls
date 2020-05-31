@@ -213,31 +213,31 @@ private class TriggerHandlerTest {
   // modes for testing
 
   private static void beforeInsertMode() {
-    handler.setTriggerContext('before insert', true);
+    handler.setTriggerContext(TriggerOperation.BEFORE_INSERT, true);
   }
 
   private static void beforeUpdateMode() {
-    handler.setTriggerContext('before update', true);
+    handler.setTriggerContext(TriggerOperation.BEFORE_UPDATE, true);
   }
 
   private static void beforeDeleteMode() {
-    handler.setTriggerContext('before delete', true);
+    handler.setTriggerContext(TriggerOperation.BEFORE_DELETE, true);
   }
 
   private static void afterInsertMode() {
-    handler.setTriggerContext('after insert', true);
+    handler.setTriggerContext(TriggerOperation.AFTER_INSERT, true);
   }
 
   private static void afterUpdateMode() {
-    handler.setTriggerContext('after update', true);
+    handler.setTriggerContext(TriggerOperation.AFTER_UPDATE, true);
   }
 
   private static void afterDeleteMode() {
-    handler.setTriggerContext('after delete', true);
+    handler.setTriggerContext(TriggerOperation.AFTER_DELETE, true);
   }
 
   private static void afterUndeleteMode() {
-    handler.setTriggerContext('after undelete', true);
+    handler.setTriggerContext(TriggerOperation.AFTER_UNDELETE, true);
   }
 
   // test implementation of the TriggerHandler
